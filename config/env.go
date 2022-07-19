@@ -18,12 +18,12 @@ type EnvVariables struct {
 var env *EnvVariables
 
 func initEnvVariables() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatalln("Unable to load dotenv file")
-	}
-
 	if env != nil {
 		return
+	}
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatalln("Unable to load dotenv file")
 	}
 
 	env = &EnvVariables{
