@@ -18,10 +18,13 @@ var validate = validator.New()
 
 func GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
 		var user model.User
 		id := c.Param("id")
 		objectId, _ := primitive.ObjectIDFromHex(id)
-		err := userCollection.FindOne(context.Background(), bson.M{"id": objectId}).Decode(&user)
+		err := userCollection.FindOne(ctx, bson.M{"id": objectId}).Decode(&user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.UserResponse{
 				Status:  http.StatusInternalServerError,
@@ -41,9 +44,9 @@ func GetUser() gin.HandlerFunc {
 func CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		var user model.User
 		defer cancel()
 
+		var user model.User
 		// validation of request json body
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, responses.UserResponse{
