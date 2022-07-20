@@ -13,6 +13,7 @@ type EnvVariables struct {
 	MongodbUri          string
 	MongodbDatabaseName string
 	TrustedProxies      []string
+	JwtSecretKey        string
 }
 
 var env *EnvVariables
@@ -32,6 +33,7 @@ func initEnvVariables() {
 		MongodbUri:          os.Getenv("MONGODB_URI"),
 		MongodbDatabaseName: os.Getenv("MONGODB_DATABASE"),
 		TrustedProxies:      strings.Split(os.Getenv("TRUSTED_PROXIES"), ","),
+		JwtSecretKey:        os.Getenv("JWT_SECRET_KEY"),
 	}
 }
 
