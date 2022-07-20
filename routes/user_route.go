@@ -5,9 +5,10 @@ import (
 	"user-info-service/controllers"
 )
 
-func UserRoutes(route *gin.Engine) {
-	route.POST("/users", controllers.CreateUser())
-	route.GET("/users/:id", controllers.GetUser())
-	route.PUT("/users/:id", controllers.UpdateUser())
-	route.DELETE("/users/:id", controllers.DeleteUser())
+func UserRoutes(router *gin.Engine) {
+	userRouter := router.Group("/users")
+	userRouter.POST("", controllers.CreateUser())
+	userRouter.GET("/:id", controllers.GetUser())
+	userRouter.PUT("/:id", controllers.UpdateUser())
+	userRouter.DELETE("/:id", controllers.DeleteUser())
 }
