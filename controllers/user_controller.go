@@ -64,6 +64,23 @@ func UpdateUser() gin.HandlerFunc {
 	}
 }
 
+func DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		err := userService.Delete(id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, getErrorUserResponse(http.StatusInternalServerError, err))
+		}
+
+		c.JSON(http.StatusOK, responses.UserResponse{
+			Status:  http.StatusOK,
+			Message: "deleted",
+			Data:    map[string]interface{}{"data": "deleted"},
+		})
+	}
+}
+
 func getErrorUserResponse(statusCode int, err error) *responses.UserResponse {
 	return &responses.UserResponse{
 		Status:  statusCode,

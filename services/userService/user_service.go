@@ -83,3 +83,20 @@ func Update(id string, user *model.User) error {
 	}
 	return nil
 }
+
+func Delete(id string) error {
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
+
+	ctx, cancel := getContext()
+	defer cancel()
+
+	_, err = collection.DeleteOne(ctx, bson.M{"id": objectId})
+	if err != nil {
+		return err
+	}
+	return nil
+}
