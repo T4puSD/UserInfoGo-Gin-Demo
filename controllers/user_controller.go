@@ -81,6 +81,22 @@ func DeleteUser() gin.HandlerFunc {
 	}
 }
 
+func GetAllUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		users, err := userService.GetAll()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, getErrorUserResponse(http.StatusInternalServerError, err))
+			return
+		}
+
+		c.JSON(http.StatusOK, responses.UserResponse{
+			Status:  http.StatusOK,
+			Message: "success",
+			Data:    map[string]interface{}{"data": users},
+		})
+	}
+}
+
 func getErrorUserResponse(statusCode int, err error) *responses.UserResponse {
 	return &responses.UserResponse{
 		Status:  statusCode,

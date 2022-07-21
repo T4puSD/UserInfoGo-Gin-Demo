@@ -100,3 +100,30 @@ func Delete(id string) error {
 	}
 	return nil
 }
+
+func GetAll() (*[]model.User, error) {
+	ctx, cancel := getContext()
+	defer cancel()
+
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	var users []model.User
+	for cursor.Next(ctx) {
+		var singleUser model.User
+		if err := cursor.Decode(&singleUser); err != nil {
+			return nil, err
+		}
+		users = append(users, singleUser)
+	}
+
+	// closing cursor
+	err = cursor.Close(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &users, nil
+}
