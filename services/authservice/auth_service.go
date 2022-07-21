@@ -21,7 +21,7 @@ type SignedDetails struct {
 }
 
 func GenerateTokens(user *model.User) (token *string, refreshToken *string) {
-	claims := SignedDetails{
+	claims := &SignedDetails{
 		Email: user.Email,
 		Name:  user.Name,
 		StandardClaims: jwt.StandardClaims{
@@ -32,7 +32,7 @@ func GenerateTokens(user *model.User) (token *string, refreshToken *string) {
 		},
 	}
 
-	refreshClaims := SignedDetails{
+	refreshClaims := &SignedDetails{
 		Email: user.Email,
 		Name:  user.Name,
 		StandardClaims: jwt.StandardClaims{
@@ -46,7 +46,7 @@ func GenerateTokens(user *model.User) (token *string, refreshToken *string) {
 	return generateToken(claims), generateToken(refreshClaims)
 }
 
-func generateToken(claims SignedDetails) *string {
+func generateToken(claims *SignedDetails) *string {
 	token, err := jwt.NewWithClaims(jwt.SigningMethod(jwt.SigningMethodHS256), claims).SignedString([]byte(config.GetEnv().JwtSecretKey))
 	if err != nil {
 		log.Panicln("Error during creating token: ", err)
@@ -67,4 +67,16 @@ func GetHashedPassword(rawPassword string) (string, error) {
 func VerifyPassword(rawPassword string, user *model.User) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(rawPassword))
 	return err == nil
+}
+
+func VerifyToken(token string) (*jwt.Token, error) {
+	jwtToken, err := jwt.ParseWithClaims(token, &SignedDetails{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.GetEnv().JwtSecretKey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return jwtToken, nil
 }

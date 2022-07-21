@@ -13,7 +13,7 @@ func GetUser() gin.HandlerFunc {
 		id := c.Param("id")
 		user, err := userService.Get(id)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, getErrorUserResponse(http.StatusInternalServerError, err))
+			c.JSON(http.StatusInternalServerError, responses.GetErrorUserResponse(http.StatusInternalServerError, err))
 			return
 		}
 
@@ -31,12 +31,12 @@ func UpdateUser() gin.HandlerFunc {
 
 		var user model.User
 		if err := c.BindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, getErrorUserResponse(http.StatusBadRequest, err))
+			c.JSON(http.StatusBadRequest, responses.GetErrorUserResponse(http.StatusBadRequest, err))
 			return
 		}
 
 		if err := userService.Update(id, &user); err != nil {
-			c.JSON(http.StatusBadRequest, getErrorUserResponse(http.StatusInternalServerError, err))
+			c.JSON(http.StatusBadRequest, responses.GetErrorUserResponse(http.StatusInternalServerError, err))
 			return
 		}
 
@@ -54,7 +54,7 @@ func DeleteUser() gin.HandlerFunc {
 
 		err := userService.Delete(id)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, getErrorUserResponse(http.StatusInternalServerError, err))
+			c.JSON(http.StatusInternalServerError, responses.GetErrorUserResponse(http.StatusInternalServerError, err))
 		}
 
 		c.JSON(http.StatusOK, responses.UserResponse{
@@ -69,7 +69,7 @@ func GetAllUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		users, err := userService.GetAll()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, getErrorUserResponse(http.StatusInternalServerError, err))
+			c.JSON(http.StatusInternalServerError, responses.GetErrorUserResponse(http.StatusInternalServerError, err))
 			return
 		}
 
@@ -78,13 +78,5 @@ func GetAllUser() gin.HandlerFunc {
 			Message: "success",
 			Data:    map[string]interface{}{"data": users},
 		})
-	}
-}
-
-func getErrorUserResponse(statusCode int, err error) *responses.UserResponse {
-	return &responses.UserResponse{
-		Status:  statusCode,
-		Message: "error",
-		Data:    map[string]interface{}{"data": err.Error()},
 	}
 }
