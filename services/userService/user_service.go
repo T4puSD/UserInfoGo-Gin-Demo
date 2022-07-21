@@ -39,7 +39,7 @@ func Get(id string) (*model.User, error) {
 		return nil, err
 	}
 
-	if err := collection.FindOne(ctx, bson.M{"id": objectId}).Decode(&user); err != nil {
+	if err := collection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&user); err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -87,7 +87,7 @@ func Update(id string, user *model.User) error {
 	}
 
 	update := bson.M{"name": user.Name, "email": user.Email}
-	_, err = collection.UpdateOne(ctx, bson.M{"id": objectId}, bson.M{"$set": update})
+	_, err = collection.UpdateByID(ctx, objectId, bson.M{"$set": update})
 	if err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func Delete(id string) error {
 	ctx, cancel := getContext()
 	defer cancel()
 
-	_, err = collection.DeleteOne(ctx, bson.M{"id": objectId})
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objectId})
 	if err != nil {
 		return err
 	}
