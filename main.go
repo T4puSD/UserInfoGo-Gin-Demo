@@ -23,6 +23,7 @@ func main() {
 
 	// plugging different routes
 	routes.UserRoutes(router)
+	routes.AuthRoute(router)
 
 	err := router.Run(":" + config.GetEnv().ServerPort)
 	if err != nil {

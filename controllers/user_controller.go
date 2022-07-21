@@ -25,22 +25,6 @@ func GetUser() gin.HandlerFunc {
 	}
 }
 
-func CreateUser() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var user model.User
-		// validation of request json body
-		if err := c.BindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, getErrorUserResponse(http.StatusBadRequest, err))
-			return
-		}
-
-		err := userService.Save(&user)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, getErrorUserResponse(http.StatusBadRequest, err))
-		}
-	}
-}
-
 func UpdateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
