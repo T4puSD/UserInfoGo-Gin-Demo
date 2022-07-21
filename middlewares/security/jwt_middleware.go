@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	BEARER_KEYWORD           = "Bearer"
-	AUTHORIZATION_HEADER_KEY = "Authorization"
+	BearerKeyword          = "Bearer"
+	AuthorizationHeaderKey = "Authorization"
 )
 
 func ValidateAuthentication() gin.HandlerFunc {
@@ -36,12 +36,12 @@ func ValidateAuthentication() gin.HandlerFunc {
 func extractTokenFromRequest(c *gin.Context) (*string, error) {
 	noAuthorizationHeaderError := errors.New("No Authorization Header Provided!")
 
-	bearer := c.GetHeader(AUTHORIZATION_HEADER_KEY)
+	bearer := c.GetHeader(AuthorizationHeaderKey)
 	if utils.IsBlank(bearer) {
 		return nil, noAuthorizationHeaderError
 	}
 
-	token := bearer[len(BEARER_KEYWORD)+1:]
+	token := bearer[len(BearerKeyword)+1:]
 	if utils.IsBlank(token) {
 		return nil, noAuthorizationHeaderError
 	}
